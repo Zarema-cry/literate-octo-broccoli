@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Свадьба Натальи и Александра</title>
+  <style>
+    :root {
+      --primary: #d4a373;
+      --accent: #c08863;
+      --bg-light: #fffdf9;
+      --text-dark: #2c2a28;
+      --border: #eee;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-top: 40px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .date {
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: #666;
+      display: block;
+    }
+    section {
+      background: #fff;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+    .section-title {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 24px;
+    }
+    .description {
+      text-align: center;
+      color: #555;
+      max-width: 600px;
+      margin: 0 auto 28px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    textarea {
+      resize: vertical;
+    }
+    button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button[type="submit"]:hover {
+      background-color: #a8704d;
+    }
+    button[type="submit"]:disabled {
+      background-color: #c0c0c0;
+      cursor: not-allowed;
+    }
+    .message-box {
+      display: none;
+      text-align: center;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .message-box.success {
+      display: block;
+      color: var(--success);
+      background-color: #e6f4ea;
+    }
+    .message-box.error {
+      display: block;
+      color: var(--error);
+      background-color: #fce8e8;
+    }
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: #888;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 1.8rem; }
+      .container { padding: 15px; }
+      section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Наталья &amp; Александр<span class="date">10 октября 2026</span></h1>
+    </header>
+
+    <section>
+      <h2 class="section-title">Подтвердите ваше присутствие</h2>
+      <p class="description">
+        Мы будем очень рады видеть вас на нашем празднике. Пожалуйста, заполните форму ниже до 1 октября.
+      </p>
+
+      <form id="rsvpForm">
+        <div class="form-group">
+          <label for="name">Ваше имя</label>
+          <input type="text" id="name" name="name" placeholder="Иван Иванов" required />
+        </div>
+
+        <div class="form-group">
+          <label for="guests">Количество гостей</label>
+          <select id="guests" name="guests" required>
+            <option value="" disabled selected>Выберите количество</option>
+            <option value="1">1 человек</option>
+            <option value="2">2 человека</option>
+            <option value="3">3 человека</option>
+            <option value="4">4 человека</option>
+            <option value="5+">5 и более</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="attendance">Ваше присутствие</label>
+          <select id="attendance" name="attendance" required>
+            <option value="" disabled selected>Ваш выбор</option>
+            <option value="Да, буду">Да, буду</option>
+            <option value="К сожалению, не смогу">К сожалению, не смогу</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Комментарий</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="  "></textarea>
+        </div>
+
+        <button type="submit">Подтвердить присутствие</button>
+        <div id="messageBox" class="message-box"></div>
+      </form>
+    </section>
+
+    <footer>
+      <p>Наталья и Александр &copy; 2026 | Будем счастливы видеть вас рядом!</p>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('rsvpForm');
+    const btn = form.querySelector('button[type="submit"]');
+    const messageBox = document.getElementById('messageBox');
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      // Собираем данные из полей формы
+      const name = document.getElementById('name').value;
+      const guests = document.getElementById('guests').value;
+      const attendance = document.getElementById('attendance').value;
+      const notes = document.getElementById('notes').value;
+
+      // Блокируем кнопку и меняем текст
+      const originalText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = 'Отправка...';
+      messageBox.className = 'message-box';
+      messageBox.style.display = 'none';
+
+      try {
+        const response = await fetch('https://api.formtomail.ru/send', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer R3OuMmxVdJ7TWdcB', // ← замените на свой ключ
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: 'Подтверждение присутствия на свадьбе',
+            body: {
+              'Имя гостя': name,
+              'Количество гостей': guests,
+              'Присутствие': attendance,
+              'Комментарий': notes || '—'
+            }
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.statusCode === 200) {
+          messageBox.textContent = 'Спасибо! Ваше подтверждение отправлено.';
+          messageBox.className = 'message-box success';
+          form.reset();
+        } else {
+          messageBox.textContent = 'Произошла ошибка. Попробуйте ещё раз.';
+          messageBox.className = 'message-box error';
+        }
+      } catch (error) {
+        messageBox.textContent = 'Не удалось отправить. Проверьте интернет-соединение.';
+        messageBox.className = 'message-box error';
+      } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
+      }
+    });
+  </script>
+</body>
+</html>
